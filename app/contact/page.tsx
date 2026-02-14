@@ -1,7 +1,17 @@
-import { getPageContent, get } from '@/lib/content';
+import { Metadata } from 'next';
+import { getPageContent, get, getSEOContent, getGlobalSEO, generateMetadata as genMeta } from '@/lib/content';
 import ContactClient from './ContactClient';
 
 export const revalidate = 60;
+
+// Generate page-specific metadata
+export async function generateMetadata(): Promise<Metadata> {
+  const [seo, globalSeo] = await Promise.all([
+    getSEOContent('contact'),
+    getGlobalSEO(),
+  ]);
+  return genMeta(seo, globalSeo, '/contact');
+}
 
 export default async function ContactPage() {
   const content = await getPageContent(['contact', 'global']);

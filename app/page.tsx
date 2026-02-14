@@ -1,7 +1,17 @@
-import { getPageContent, get } from '@/lib/content';
+import { Metadata } from 'next';
+import { getPageContent, get, getSEOContent, getGlobalSEO, generateMetadata as genMeta } from '@/lib/content';
 import HomeClient from './HomeClient';
 
 export const revalidate = 60; // Revalidate every 60 seconds
+
+// Generate page-specific metadata
+export async function generateMetadata(): Promise<Metadata> {
+  const [seo, globalSeo] = await Promise.all([
+    getSEOContent('home'),
+    getGlobalSEO(),
+  ]);
+  return genMeta(seo, globalSeo, '/');
+}
 
 export default async function Home() {
   // Fetch content from CMS

@@ -1,6 +1,88 @@
 // Content fetching and fallback system
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
+// SEO fallback content
+export const fallbackSEO = {
+  global: {
+    siteName: 'Foody Parrot',
+    siteUrl: 'https://foodyparrot.com',
+    defaultTitle: 'Foody Parrot | The Social Gist Platform',
+    titleTemplate: '%s | Foody Parrot',
+    defaultDescription: 'Join Foody Parrot - the revolutionary social media app where you react to gists. Discover trending conversations, share your reactions, and connect with a community that speaks your language.',
+    defaultKeywords: 'social media, gists, reactions, community, foody parrot, social app, food lovers, food community',
+    defaultOgImage: '/og-image.png',
+    twitterHandle: '@foodyparrot',
+    twitterCardType: 'summary_large_image',
+    locale: 'en_US',
+    themeColor: '#5BBB69',
+  },
+  home: {
+    title: 'Foody Parrot | The Social Gist Platform',
+    description: 'Join Foody Parrot - the revolutionary social media app where you react to gists. Discover trending conversations, share your reactions, and connect with a community that speaks your language.',
+    keywords: 'social media, gists, reactions, community, foody parrot, social app, food lovers, trending conversations',
+    ogTitle: 'Foody Parrot | The Social Gist Platform',
+    ogDescription: 'Join the revolutionary social platform where conversations come alive through gists and reactions.',
+    ogImage: '/og-home.png',
+    ogType: 'website',
+    twitterTitle: 'Foody Parrot | The Social Gist Platform',
+    twitterDescription: 'Join the revolutionary social platform where conversations come alive.',
+    twitterImage: '/twitter-home.png',
+    canonicalUrl: '/',
+  },
+  about: {
+    title: 'About Us',
+    description: "Learn about Foody Parrot's story, mission, and the passionate team building the future of social food conversations.",
+    keywords: 'about foody parrot, our story, team, mission, food social platform',
+    ogTitle: 'About Foody Parrot | Our Story & Mission',
+    ogDescription: "Discover the story behind Foody Parrot and our mission to revolutionize food conversations.",
+    ogImage: '/og-about.png',
+    ogType: 'website',
+    twitterTitle: 'About Foody Parrot',
+    twitterDescription: 'Learn about the team and mission behind Foody Parrot.',
+    twitterImage: '/twitter-about.png',
+    canonicalUrl: '/about',
+  },
+  features: {
+    title: 'Features',
+    description: "Discover Foody Parrot's powerful features: Gist Xtra AI assistant, Food Heroes donations, Diary & Analytics, Market, Games, and more.",
+    keywords: 'foody parrot features, gist xtra, food heroes, marketplace, food quiz, foody token, social features',
+    ogTitle: 'Foody Parrot Features | Everything You Need',
+    ogDescription: 'Explore all the powerful features that make Foody Parrot the ultimate food social platform.',
+    ogImage: '/og-features.png',
+    ogType: 'website',
+    twitterTitle: 'Foody Parrot Features',
+    twitterDescription: 'Explore the powerful features of Foody Parrot.',
+    twitterImage: '/twitter-features.png',
+    canonicalUrl: '/features',
+  },
+  contact: {
+    title: 'Contact Us',
+    description: "Get in touch with the Foody Parrot team. We'd love to hear from you - questions, feedback, or just to say hi!",
+    keywords: 'contact foody parrot, support, help, feedback, customer service',
+    ogTitle: 'Contact Foody Parrot | Get In Touch',
+    ogDescription: "Have questions? We'd love to hear from you. Contact our team today.",
+    ogImage: '/og-contact.png',
+    ogType: 'website',
+    twitterTitle: 'Contact Foody Parrot',
+    twitterDescription: 'Get in touch with the Foody Parrot team.',
+    twitterImage: '/twitter-contact.png',
+    canonicalUrl: '/contact',
+  },
+  privacy: {
+    title: 'Privacy Policy',
+    description: "Your privacy matters to us. Read Foody Parrot's privacy policy to understand how we collect, use, and protect your data.",
+    keywords: 'privacy policy, data protection, foody parrot privacy, terms, legal',
+    ogTitle: 'Privacy Policy | Foody Parrot',
+    ogDescription: 'Your privacy matters. Learn how we protect your data at Foody Parrot.',
+    ogImage: '/og-privacy.png',
+    ogType: 'website',
+    twitterTitle: 'Privacy Policy | Foody Parrot',
+    twitterDescription: 'Learn how Foody Parrot protects your privacy.',
+    twitterImage: '/twitter-privacy.png',
+    canonicalUrl: '/privacy',
+  },
+};
+
 // Fallback content when API is not available
 export const fallbackContent = {
   global: {
@@ -200,4 +282,81 @@ export async function getPageContent(sections: (keyof typeof fallbackContent)[])
 // Helper to get a specific content value
 export function get<T>(content: Record<string, any>, key: string, fallback: T): T {
   return content[key] !== undefined ? content[key] : fallback;
+}
+
+// Fetch SEO content for a specific page
+export async function getSEOContent(page: keyof typeof fallbackSEO): Promise<Record<string, any>> {
+  try {
+    const response = await fetch(`${API_URL}/site-content/key/seo.${page}`, {
+      next: { revalidate: 60 },
+      cache: 'force-cache',
+    });
+
+    if (!response.ok) {
+      console.warn(`Failed to fetch SEO for ${page}, using fallback`);
+      return fallbackSEO[page] || {};
+    }
+
+    const data = await response.json();
+    return { ...fallbackSEO[page], ...data.content };
+  } catch (error) {
+    console.warn(`Error fetching SEO for ${page}, using fallback:`, error);
+    return fallbackSEO[page] || {};
+  }
+}
+
+// Get global SEO settings
+export async function getGlobalSEO(): Promise<Record<string, any>> {
+  return getSEOContent('global');
+}
+
+// Generate metadata object from SEO content
+export function generateMetadata(
+  seo: Record<string, any>,
+  globalSeo: Record<string, any>,
+  pathname: string = '/'
+) {
+  const siteUrl = globalSeo.siteUrl || 'https://foodyparrot.com';
+  const fullUrl = `${siteUrl}${pathname}`;
+  
+  // Apply title template if not the home page
+  let title = seo.title || globalSeo.defaultTitle;
+  if (pathname !== '/' && globalSeo.titleTemplate && seo.title) {
+    title = globalSeo.titleTemplate.replace('%s', seo.title);
+  }
+
+  return {
+    title,
+    description: seo.description || globalSeo.defaultDescription,
+    keywords: seo.keywords?.split(',').map((k: string) => k.trim()) || globalSeo.defaultKeywords?.split(',').map((k: string) => k.trim()),
+    authors: [{ name: globalSeo.siteName || 'Foody Parrot Team' }],
+    metadataBase: new URL(siteUrl),
+    alternates: {
+      canonical: seo.canonicalUrl || pathname,
+    },
+    openGraph: {
+      title: seo.ogTitle || title,
+      description: seo.ogDescription || seo.description || globalSeo.defaultDescription,
+      type: seo.ogType || 'website',
+      url: fullUrl,
+      siteName: globalSeo.siteName || 'Foody Parrot',
+      images: seo.ogImage ? [{ url: seo.ogImage, width: 1200, height: 630 }] : 
+              globalSeo.defaultOgImage ? [{ url: globalSeo.defaultOgImage, width: 1200, height: 630 }] : undefined,
+      locale: globalSeo.locale || 'en_US',
+    },
+    twitter: {
+      card: globalSeo.twitterCardType || 'summary_large_image',
+      title: seo.twitterTitle || seo.ogTitle || title,
+      description: seo.twitterDescription || seo.ogDescription || seo.description,
+      images: seo.twitterImage ? [seo.twitterImage] : 
+              seo.ogImage ? [seo.ogImage] : 
+              globalSeo.defaultOgImage ? [globalSeo.defaultOgImage] : undefined,
+      site: globalSeo.twitterHandle,
+      creator: globalSeo.twitterHandle,
+    },
+    robots: seo.noIndex ? { index: false, follow: false } : undefined,
+    other: {
+      'theme-color': globalSeo.themeColor || '#5BBB69',
+    },
+  };
 }

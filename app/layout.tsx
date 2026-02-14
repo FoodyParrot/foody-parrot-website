@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Syne, Outfit } from "next/font/google";
 import "./globals.css";
-import { getPageContent, get } from "@/lib/content";
+import { getPageContent, get, getGlobalSEO, fallbackSEO } from "@/lib/content";
 import { SiteContentProvider } from "@/lib/site-content-context";
 
 const syne = Syne({
@@ -16,17 +16,38 @@ const outfit = Outfit({
   weight: ["300", "400", "500", "600", "700"],
 });
 
-export const metadata: Metadata = {
-  title: "Foody Parrot | The Social Gist Platform",
-  description: "Join Foody Parrot - the revolutionary social media app where you react to gists. Discover trending conversations, share your reactions, and connect with a community that speaks your language.",
-  keywords: ["social media", "gists", "reactions", "community", "foody parrot", "social app"],
-  authors: [{ name: "Foody Parrot Team" }],
-  openGraph: {
-    title: "Foody Parrot | The Social Gist Platform",
-    description: "Join Foody Parrot - the revolutionary social media app where you react to gists.",
-    type: "website",
-  },
-};
+// Generate metadata dynamically from CMS
+export async function generateMetadata(): Promise<Metadata> {
+  const globalSeo = await getGlobalSEO();
+  
+  return {
+    title: {
+      default: globalSeo.defaultTitle || fallbackSEO.global.defaultTitle,
+      template: globalSeo.titleTemplate || fallbackSEO.global.titleTemplate,
+    },
+    description: globalSeo.defaultDescription || fallbackSEO.global.defaultDescription,
+    keywords: globalSeo.defaultKeywords?.split(',').map((k: string) => k.trim()) || 
+              fallbackSEO.global.defaultKeywords.split(',').map(k => k.trim()),
+    authors: [{ name: globalSeo.siteName || 'Foody Parrot Team' }],
+    metadataBase: new URL(globalSeo.siteUrl || 'https://foodyparrot.com'),
+    openGraph: {
+      title: globalSeo.defaultTitle || fallbackSEO.global.defaultTitle,
+      description: globalSeo.defaultDescription || fallbackSEO.global.defaultDescription,
+      type: "website",
+      siteName: globalSeo.siteName || 'Foody Parrot',
+      images: globalSeo.defaultOgImage ? [{ url: globalSeo.defaultOgImage }] : undefined,
+      locale: globalSeo.locale || 'en_US',
+    },
+    twitter: {
+      card: (globalSeo.twitterCardType || 'summary_large_image') as 'summary_large_image' | 'summary',
+      site: globalSeo.twitterHandle,
+      creator: globalSeo.twitterHandle,
+    },
+    other: {
+      'theme-color': globalSeo.themeColor || '#5BBB69',
+    },
+  };
+}
 
 export const revalidate = 60;
 

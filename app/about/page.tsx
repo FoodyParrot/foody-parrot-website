@@ -1,7 +1,17 @@
-import { getPageContent, get } from '@/lib/content';
+import { Metadata } from 'next';
+import { getPageContent, get, getSEOContent, getGlobalSEO, generateMetadata as genMeta } from '@/lib/content';
 import AboutClient from './AboutClient';
 
 export const revalidate = 60;
+
+// Generate page-specific metadata
+export async function generateMetadata(): Promise<Metadata> {
+  const [seo, globalSeo] = await Promise.all([
+    getSEOContent('about'),
+    getGlobalSEO(),
+  ]);
+  return genMeta(seo, globalSeo, '/about');
+}
 
 export default async function AboutPage() {
   const content = await getPageContent(['about', 'global']);
