@@ -285,7 +285,7 @@ export default function HomeClient({ data }: HomeClientProps) {
             className="glass rounded-3xl p-8 md:p-12"
           >
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {data.stats.map((stat, index) => (
+              {(data.stats || []).map((stat, index) => (
                 <motion.div
                   key={stat.label}
                   initial={{ opacity: 0, y: 20 }}
@@ -329,7 +329,7 @@ export default function HomeClient({ data }: HomeClientProps) {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {data.targetAudience.items.map((audience, index) => (
+            {(data.targetAudience?.items || []).map((audience, index) => (
               <motion.div
                 key={audience.title}
                 initial={{ opacity: 0, y: 40 }}
@@ -380,7 +380,7 @@ export default function HomeClient({ data }: HomeClientProps) {
 
           {/* Features grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {data.features.items.map((feature, index) => (
+            {(data.features?.items || []).map((feature, index) => (
               <motion.div
                 key={feature.title}
                 initial={{ opacity: 0, y: 40 }}
@@ -442,7 +442,7 @@ export default function HomeClient({ data }: HomeClientProps) {
 
           {/* Steps */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {data.howItWorks.steps.map((step, index) => (
+            {(data.howItWorks?.steps || []).map((step, index) => (
               <motion.div
                 key={step.number}
                 initial={{ opacity: 0, y: 40 }}
@@ -502,7 +502,7 @@ export default function HomeClient({ data }: HomeClientProps) {
 
           {/* Testimonials grid */}
           <div className="grid md:grid-cols-3 gap-6">
-            {data.testimonials.items.map((testimonial, index) => (
+            {(data.testimonials?.items || []).map((testimonial, index) => (
               <motion.div
                 key={testimonial.handle}
                 initial={{ opacity: 0, y: 40 }}

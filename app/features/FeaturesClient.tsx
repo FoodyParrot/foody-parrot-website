@@ -67,7 +67,7 @@ export default function FeaturesClient({ data }: FeaturesClientProps) {
       <section className="py-12 relative">
         <div className="max-w-7xl mx-auto px-6">
           <div className="space-y-24">
-            {data.features.map((feature, index) => (
+            {(data.features || []).map((feature, index) => (
               <motion.div
                 key={feature.title}
                 initial={{ opacity: 0, y: 60 }}
@@ -99,7 +99,7 @@ export default function FeaturesClient({ data }: FeaturesClientProps) {
                   </p>
 
                   <div className="space-y-3">
-                    {feature.benefits.map((benefit, i) => (
+                    {(feature.benefits || []).map((benefit, i) => (
                       <motion.div
                         key={i}
                         initial={{ opacity: 0, x: -20 }}

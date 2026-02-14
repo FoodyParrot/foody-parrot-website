@@ -80,7 +80,7 @@ export default function AboutClient({ data }: AboutClientProps) {
                 {data.story.title.split(' ')[0]} <span className="gradient-text">{data.story.title.split(' ').slice(1).join(' ')}</span>
               </h2>
               <div className="space-y-6 text-[#a1a1a1] leading-relaxed">
-                {data.story.paragraphs.map((paragraph, index) => (
+                {(data.story.paragraphs || []).map((paragraph, index) => (
                   <p key={index}>{paragraph}</p>
                 ))}
               </div>
@@ -157,7 +157,7 @@ export default function AboutClient({ data }: AboutClientProps) {
             <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-[#5BBB69]/50 via-[#5E5D5E]/50 to-transparent hidden lg:block" />
 
             <div className="space-y-12">
-              {data.timeline.map((item, index) => (
+              {(data.timeline || []).map((item, index) => (
                 <motion.div
                   key={item.year}
                   initial={{ opacity: 0, y: 40 }}
@@ -209,7 +209,7 @@ export default function AboutClient({ data }: AboutClientProps) {
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            {data.values.items.map((value, index) => (
+            {(data.values?.items || []).map((value, index) => (
               <motion.div
                 key={value.title}
                 initial={{ opacity: 0, y: 40 }}
@@ -253,7 +253,7 @@ export default function AboutClient({ data }: AboutClientProps) {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {data.team.members.map((member, index) => (
+            {(data.team?.members || []).map((member, index) => (
               <motion.div
                 key={member.name}
                 initial={{ opacity: 0, y: 40 }}

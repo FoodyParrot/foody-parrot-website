@@ -310,53 +310,62 @@ export async function getGlobalSEO(): Promise<Record<string, any>> {
   return getSEOContent('global');
 }
 
+// Helper to safely parse keywords
+function parseKeywords(keywords: string | undefined): string[] | undefined {
+  if (!keywords || typeof keywords !== 'string') return undefined;
+  return keywords.split(',').map((k: string) => k.trim()).filter(Boolean);
+}
+
 // Generate metadata object from SEO content
 export function generateMetadata(
   seo: Record<string, any>,
   globalSeo: Record<string, any>,
   pathname: string = '/'
 ) {
-  const siteUrl = globalSeo.siteUrl || 'https://foodyparrot.com';
+  const siteUrl = globalSeo?.siteUrl || 'https://foodyparrot.com';
   const fullUrl = `${siteUrl}${pathname}`;
   
   // Apply title template if not the home page
-  let title = seo.title || globalSeo.defaultTitle;
-  if (pathname !== '/' && globalSeo.titleTemplate && seo.title) {
+  let title = seo?.title || globalSeo?.defaultTitle || 'Foody Parrot';
+  if (pathname !== '/' && globalSeo?.titleTemplate && seo?.title) {
     title = globalSeo.titleTemplate.replace('%s', seo.title);
   }
 
+  const description = seo?.description || globalSeo?.defaultDescription || '';
+  const keywords = parseKeywords(seo?.keywords) || parseKeywords(globalSeo?.defaultKeywords);
+
   return {
     title,
-    description: seo.description || globalSeo.defaultDescription,
-    keywords: seo.keywords?.split(',').map((k: string) => k.trim()) || globalSeo.defaultKeywords?.split(',').map((k: string) => k.trim()),
-    authors: [{ name: globalSeo.siteName || 'Foody Parrot Team' }],
+    description,
+    keywords,
+    authors: [{ name: globalSeo?.siteName || 'Foody Parrot Team' }],
     metadataBase: new URL(siteUrl),
     alternates: {
-      canonical: seo.canonicalUrl || pathname,
+      canonical: seo?.canonicalUrl || pathname,
     },
     openGraph: {
-      title: seo.ogTitle || title,
-      description: seo.ogDescription || seo.description || globalSeo.defaultDescription,
-      type: seo.ogType || 'website',
+      title: seo?.ogTitle || title,
+      description: seo?.ogDescription || description,
+      type: (seo?.ogType || 'website') as 'website',
       url: fullUrl,
-      siteName: globalSeo.siteName || 'Foody Parrot',
-      images: seo.ogImage ? [{ url: seo.ogImage, width: 1200, height: 630 }] : 
-              globalSeo.defaultOgImage ? [{ url: globalSeo.defaultOgImage, width: 1200, height: 630 }] : undefined,
-      locale: globalSeo.locale || 'en_US',
+      siteName: globalSeo?.siteName || 'Foody Parrot',
+      images: seo?.ogImage ? [{ url: seo.ogImage, width: 1200, height: 630 }] : 
+              globalSeo?.defaultOgImage ? [{ url: globalSeo.defaultOgImage, width: 1200, height: 630 }] : undefined,
+      locale: globalSeo?.locale || 'en_US',
     },
     twitter: {
-      card: globalSeo.twitterCardType || 'summary_large_image',
-      title: seo.twitterTitle || seo.ogTitle || title,
-      description: seo.twitterDescription || seo.ogDescription || seo.description,
-      images: seo.twitterImage ? [seo.twitterImage] : 
-              seo.ogImage ? [seo.ogImage] : 
-              globalSeo.defaultOgImage ? [globalSeo.defaultOgImage] : undefined,
-      site: globalSeo.twitterHandle,
-      creator: globalSeo.twitterHandle,
+      card: (globalSeo?.twitterCardType || 'summary_large_image') as 'summary_large_image' | 'summary',
+      title: seo?.twitterTitle || seo?.ogTitle || title,
+      description: seo?.twitterDescription || seo?.ogDescription || description,
+      images: seo?.twitterImage ? [seo.twitterImage] : 
+              seo?.ogImage ? [seo.ogImage] : 
+              globalSeo?.defaultOgImage ? [globalSeo.defaultOgImage] : undefined,
+      site: globalSeo?.twitterHandle,
+      creator: globalSeo?.twitterHandle,
     },
-    robots: seo.noIndex ? { index: false, follow: false } : undefined,
+    robots: seo?.noIndex ? { index: false, follow: false } : undefined,
     other: {
-      'theme-color': globalSeo.themeColor || '#5BBB69',
+      'theme-color': globalSeo?.themeColor || '#5BBB69',
     },
   };
 }

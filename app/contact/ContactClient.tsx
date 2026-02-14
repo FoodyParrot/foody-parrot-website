@@ -95,7 +95,7 @@ export default function ContactClient({ data }: ContactClientProps) {
       <section className="py-12 relative">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {data.contactMethods.map((method, index) => (
+            {(data.contactMethods || []).map((method, index) => (
               <motion.a
                 key={method.title}
                 href={method.href}
@@ -286,7 +286,7 @@ export default function ContactClient({ data }: ContactClientProps) {
               </h2>
 
               <div className="space-y-4">
-                {data.faqs.items.map((faq, index) => (
+                {(data.faqs?.items || []).map((faq, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
