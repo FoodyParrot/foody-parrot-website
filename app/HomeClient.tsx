@@ -328,9 +328,15 @@ export default function HomeClient({ data }: HomeClientProps) {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="flex gap-3 md:gap-4 overflow-x-auto pb-2 scrollbar-hide">
             {(data.targetAudience?.items || []).map((audience, index) => {
               const isValidImageUrl = audience.icon && (audience.icon.startsWith('http') || audience.icon.startsWith('/'));
+              const itemCount = data.targetAudience?.items?.length || 1;
+              // Dynamic sizing based on item count
+              const iconSize = itemCount > 6 ? 'w-10 h-10 text-xl' : itemCount > 4 ? 'w-12 h-12 text-2xl' : 'w-14 h-14 text-3xl';
+              const padding = itemCount > 6 ? 'p-4' : itemCount > 4 ? 'p-5' : 'p-6';
+              const titleSize = itemCount > 6 ? 'text-sm' : itemCount > 4 ? 'text-base' : 'text-lg';
+              
               return (
                 <motion.div
                   key={audience.title}
@@ -339,25 +345,26 @@ export default function HomeClient({ data }: HomeClientProps) {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1, duration: 0.5 }}
                   whileHover={{ y: -5 }}
-                  className="glass rounded-2xl p-8 text-center card-hover"
+                  className={`glass rounded-2xl ${padding} text-center card-hover flex-1 min-w-0`}
+                  style={{ minWidth: itemCount > 6 ? '120px' : itemCount > 4 ? '140px' : '160px' }}
                 >
-                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-[#5BBB69]/20 to-[#5E5D5E]/20 flex items-center justify-center text-3xl mx-auto mb-6 overflow-hidden">
+                  <div className={`${iconSize} rounded-xl bg-gradient-to-br from-[#5BBB69]/20 to-[#5E5D5E]/20 flex items-center justify-center mx-auto mb-4 overflow-hidden`}>
                     {isValidImageUrl ? (
                       <Image
                         src={audience.icon}
                         alt={audience.title}
-                        width={64}
-                        height={64}
+                        width={56}
+                        height={56}
                         className="w-full h-full object-cover"
                       />
                     ) : (
                       <span className="text-[#5BBB69]">{audience.icon || '📷'}</span>
                     )}
                   </div>
-                  <h3 className="text-xl font-bold font-[family-name:var(--font-heading)] mb-3">
+                  <h3 className={`${titleSize} font-bold font-[family-name:var(--font-heading)] mb-2 line-clamp-2`}>
                     {audience.title}
                   </h3>
-                  <p className="text-[#a1a1a1] text-sm leading-relaxed">
+                  <p className="text-[#a1a1a1] text-xs leading-relaxed line-clamp-3">
                     {audience.description}
                   </p>
                 </motion.div>
