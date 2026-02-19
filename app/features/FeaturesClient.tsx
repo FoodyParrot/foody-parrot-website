@@ -81,8 +81,18 @@ export default function FeaturesClient({ data }: FeaturesClientProps) {
                 {/* Content */}
                 <div className="flex-1">
                   <div className="flex items-center gap-4 mb-4">
-                    <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center text-3xl`}>
-                      {feature.icon}
+                    <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center text-3xl overflow-hidden`}>
+                      {feature.icon && (feature.icon.startsWith('http') || feature.icon.startsWith('/')) ? (
+                        <Image
+                          src={feature.icon}
+                          alt={feature.title}
+                          width={64}
+                          height={64}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-white">{feature.icon || '📷'}</span>
+                      )}
                     </div>
                     <div>
                       <span className="inline-block px-3 py-1 rounded-full glass text-xs text-[#5BBB69] mb-2">
@@ -121,37 +131,55 @@ export default function FeaturesClient({ data }: FeaturesClientProps) {
 
                 {/* Visual/Illustration */}
                 <div className="flex-1 relative">
-                  <div className={`relative aspect-square rounded-3xl overflow-hidden glass p-8`}>
-                    <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-10`} />
-                    <div className="relative h-full flex items-center justify-center">
-                      <motion.div
-                        animate={{ 
-                          scale: [1, 1.05, 1],
-                          rotate: [0, 5, -5, 0]
-                        }}
-                        transition={{ duration: 5, repeat: Infinity }}
-                        className="text-9xl"
-                      >
-                        {feature.icon}
-                      </motion.div>
-                    </div>
-                    
-                    {/* Decorative elements */}
-                    <motion.div
-                      animate={{ y: [0, -10, 0] }}
-                      transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
-                      className="absolute top-4 right-4 w-12 h-12 rounded-full bg-[#5BBB69]/20 flex items-center justify-center"
-                    >
-                      <span className="text-xl">✨</span>
-                    </motion.div>
-                    <motion.div
-                      animate={{ y: [0, 10, 0] }}
-                      transition={{ duration: 4, repeat: Infinity, delay: 1 }}
-                      className="absolute bottom-4 left-4 w-12 h-12 rounded-full bg-[#5E5D5E]/20 flex items-center justify-center"
-                    >
-                      <span className="text-xl">💫</span>
-                    </motion.div>
-                  </div>
+                  {(() => {
+                    const isValidImageUrl = feature.icon && (feature.icon.startsWith('http') || feature.icon.startsWith('/'));
+                    return (
+                      <div className={`relative aspect-square rounded-3xl overflow-hidden glass ${isValidImageUrl ? 'p-0' : 'p-8'}`}>
+                        <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-10`} />
+                        <div className="relative h-full flex items-center justify-center">
+                          {isValidImageUrl ? (
+                            <Image
+                              src={feature.icon}
+                              alt={feature.title}
+                              fill
+                              className="object-cover"
+                            />
+                          ) : (
+                            <motion.div
+                              animate={{ 
+                                scale: [1, 1.05, 1],
+                                rotate: [0, 5, -5, 0]
+                              }}
+                              transition={{ duration: 5, repeat: Infinity }}
+                              className="text-9xl"
+                            >
+                              {feature.icon || '📷'}
+                            </motion.div>
+                          )}
+                        </div>
+                        
+                        {/* Decorative elements */}
+                        {!isValidImageUrl && (
+                          <>
+                            <motion.div
+                              animate={{ y: [0, -10, 0] }}
+                              transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
+                              className="absolute top-4 right-4 w-12 h-12 rounded-full bg-[#5BBB69]/20 flex items-center justify-center"
+                            >
+                              <span className="text-xl">✨</span>
+                            </motion.div>
+                            <motion.div
+                              animate={{ y: [0, 10, 0] }}
+                              transition={{ duration: 4, repeat: Infinity, delay: 1 }}
+                              className="absolute bottom-4 left-4 w-12 h-12 rounded-full bg-[#5E5D5E]/20 flex items-center justify-center"
+                            >
+                              <span className="text-xl">💫</span>
+                            </motion.div>
+                          </>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
               </motion.div>
             ))}

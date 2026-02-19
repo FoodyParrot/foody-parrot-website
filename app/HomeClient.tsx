@@ -329,27 +329,40 @@ export default function HomeClient({ data }: HomeClientProps) {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {(data.targetAudience?.items || []).map((audience, index) => (
-              <motion.div
-                key={audience.title}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                whileHover={{ y: -5 }}
-                className="glass rounded-2xl p-8 text-center card-hover"
-              >
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-[#5BBB69]/20 to-[#5E5D5E]/20 flex items-center justify-center text-3xl mx-auto mb-6">
-                  {audience.icon}
-                </div>
-                <h3 className="text-xl font-bold font-[family-name:var(--font-heading)] mb-3">
-                  {audience.title}
-                </h3>
-                <p className="text-[#a1a1a1] text-sm leading-relaxed">
-                  {audience.description}
-                </p>
-              </motion.div>
-            ))}
+            {(data.targetAudience?.items || []).map((audience, index) => {
+              const isValidImageUrl = audience.icon && (audience.icon.startsWith('http') || audience.icon.startsWith('/'));
+              return (
+                <motion.div
+                  key={audience.title}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                  whileHover={{ y: -5 }}
+                  className="glass rounded-2xl p-8 text-center card-hover"
+                >
+                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-[#5BBB69]/20 to-[#5E5D5E]/20 flex items-center justify-center text-3xl mx-auto mb-6 overflow-hidden">
+                    {isValidImageUrl ? (
+                      <Image
+                        src={audience.icon}
+                        alt={audience.title}
+                        width={64}
+                        height={64}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-[#5BBB69]">{audience.icon || '📷'}</span>
+                    )}
+                  </div>
+                  <h3 className="text-xl font-bold font-[family-name:var(--font-heading)] mb-3">
+                    {audience.title}
+                  </h3>
+                  <p className="text-[#a1a1a1] text-sm leading-relaxed">
+                    {audience.description}
+                  </p>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -394,8 +407,18 @@ export default function HomeClient({ data }: HomeClientProps) {
                 <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
                 
                 {/* Icon */}
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                  {feature.icon}
+                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform duration-300 overflow-hidden`}>
+                  {feature.icon && (feature.icon.startsWith('http') || feature.icon.startsWith('/')) ? (
+                    <Image
+                      src={feature.icon}
+                      alt={feature.title}
+                      width={56}
+                      height={56}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-white">{feature.icon || '📷'}</span>
+                  )}
                 </div>
                 
                 {/* Content */}

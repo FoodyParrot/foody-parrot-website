@@ -25,7 +25,7 @@ export default async function FeaturesPage() {
     },
     features: get(featuresContent, 'features.items', [
       {
-        icon: '🤖',
+        icon: '',
         title: 'Gist Xtra',
         subtitle: 'AI-Powered Food Assistant',
         description: "Chat with the Foody Parrot AI and get instant answers to all your food-related questions.",
@@ -33,7 +33,7 @@ export default async function FeaturesPage() {
         gradient: 'from-[#5BBB69] to-[#4A9A56]',
       },
       {
-        icon: '🦸',
+        icon: '',
         title: 'Food Heroes',
         subtitle: 'Make a Difference',
         description: "Donate food to orphanages and make a meaningful impact in your community.",
@@ -41,7 +41,7 @@ export default async function FeaturesPage() {
         gradient: 'from-[#5E5D5E] to-[#4A4A4A]',
       },
       {
-        icon: '📊',
+        icon: '',
         title: 'Diary & Analytics',
         subtitle: 'Track Your Food Journey',
         description: 'Record your diet, track your food business metrics, and get AI-powered feedback.',
@@ -49,7 +49,7 @@ export default async function FeaturesPage() {
         gradient: 'from-[#5BBB69] to-[#5E5D5E]',
       },
       {
-        icon: '🏆',
+        icon: '',
         title: 'Challenge',
         subtitle: 'Compete & Win',
         description: 'Participate in food challenges and compete with other food enthusiasts.',
@@ -57,7 +57,7 @@ export default async function FeaturesPage() {
         gradient: 'from-[#5E5D5E] to-[#5BBB69]',
       },
       {
-        icon: '🛒',
+        icon: '',
         title: 'Market',
         subtitle: 'Global Food Marketplace',
         description: 'Buy and sell food products from all over the world.',
@@ -65,7 +65,7 @@ export default async function FeaturesPage() {
         gradient: 'from-[#5E5D5E] to-[#5BBB69]',
       },
       {
-        icon: '🎮',
+        icon: '',
         title: 'Game',
         subtitle: 'Food Quiz Challenge',
         description: 'Test your food knowledge with our interactive quiz game.',
@@ -73,7 +73,7 @@ export default async function FeaturesPage() {
         gradient: 'from-[#5BBB69] to-[#4A9A56]',
       },
       {
-        icon: '🪙',
+        icon: '',
         title: 'Foody Token',
         subtitle: 'In-App Currency',
         description: 'Foody Token is the official utility token used for transactions within the Foody Parrot ecosystem.',

@@ -95,27 +95,38 @@ export default function ContactClient({ data }: ContactClientProps) {
       <section className="py-12 relative">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {(data.contactMethods || []).map((method, index) => (
-              <motion.a
-                key={method.title}
-                href={method.href}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                whileHover={{ y: -5, scale: 1.02 }}
-                className="glass rounded-2xl p-6 text-center group card-hover block"
-              >
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#5BBB69]/20 to-[#5E5D5E]/20 flex items-center justify-center text-2xl mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  {method.icon}
-                </div>
-                <h3 className="font-bold font-[family-name:var(--font-heading)] mb-1 group-hover:text-[#5BBB69] transition-colors">
-                  {method.title}
-                </h3>
-                <p className="text-sm text-[#a1a1a1] mb-2">{method.description}</p>
-                <p className="text-[#5BBB69] text-sm font-medium">{method.contact}</p>
-              </motion.a>
-            ))}
+            {(data.contactMethods || []).map((method, index) => {
+              const isValidImageUrl = method.icon && (method.icon.startsWith('http') || method.icon.startsWith('/'));
+              return (
+                <motion.a
+                  key={method.title}
+                  href={method.href}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                  whileHover={{ y: -5, scale: 1.02 }}
+                  className="glass rounded-2xl p-6 text-center group card-hover block"
+                >
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#5BBB69]/20 to-[#5E5D5E]/20 flex items-center justify-center text-2xl mx-auto mb-4 group-hover:scale-110 transition-transform overflow-hidden">
+                    {isValidImageUrl ? (
+                      <img
+                        src={method.icon}
+                        alt={method.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-[#5BBB69]">{method.icon || '📷'}</span>
+                    )}
+                  </div>
+                  <h3 className="font-bold font-[family-name:var(--font-heading)] mb-1 group-hover:text-[#5BBB69] transition-colors">
+                    {method.title}
+                  </h3>
+                  <p className="text-sm text-[#a1a1a1] mb-2">{method.description}</p>
+                  <p className="text-[#5BBB69] text-sm font-medium">{method.contact}</p>
+                </motion.a>
+              );
+            })}
           </div>
         </div>
       </section>

@@ -24,10 +24,10 @@ export default async function ContactPage() {
       subtitle: get(contactContent, 'contact.hero.subtitle', "Have a question, feedback, or just want to say hi? We'd love to hear from you. Our team is always here to help."),
     },
     contactMethods: get(contactContent, 'contact.methods', [
-      { icon: '📧', title: 'Email Us', description: 'For general inquiries and support', contact: 'hello@foodyparrot.com', href: 'mailto:hello@foodyparrot.com' },
-      { icon: '💬', title: 'Live Chat', description: 'Chat with us in real-time', contact: 'Available 9am-6pm EST', href: '#' },
-      { icon: '🐦', title: 'Social Media', description: 'Follow us for updates', contact: '@foodyparrot', href: '#' },
-      { icon: '📍', title: 'Office', description: 'Visit our headquarters', contact: 'San Francisco, CA', href: '#' },
+      { icon: '', title: 'Email Us', description: 'For general inquiries and support', contact: 'hello@foodyparrot.com', href: 'mailto:hello@foodyparrot.com' },
+      { icon: '', title: 'Live Chat', description: 'Chat with us in real-time', contact: 'Available 9am-6pm EST', href: '#' },
+      { icon: '', title: 'Social Media', description: 'Follow us for updates', contact: '@foodyparrot', href: '#' },
+      { icon: '', title: 'Office', description: 'Visit our headquarters', contact: 'San Francisco, CA', href: '#' },
     ]),
     form: {
       title: get(contactContent, 'contact.form.title', 'Send Us a Message'),

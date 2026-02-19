@@ -26,7 +26,7 @@ interface AboutClientProps {
     team: {
       title: string;
       subtitle: string;
-      members: Array<{ name: string; role: string; emoji: string; bio: string }>;
+      members: Array<{ name: string; role: string; image: string; bio: string }>;
     };
   };
 }
@@ -209,27 +209,40 @@ export default function AboutClient({ data }: AboutClientProps) {
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            {(data.values?.items || []).map((value, index) => (
-              <motion.div
-                key={value.title}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                whileHover={{ scale: 1.02 }}
-                className="glass rounded-2xl p-8 flex gap-6"
-              >
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-[#5BBB69]/20 to-[#5E5D5E]/20 flex items-center justify-center text-3xl flex-shrink-0">
-                  {value.icon}
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold font-[family-name:var(--font-heading)] mb-2">
-                    {value.title}
-                  </h3>
-                  <p className="text-[#a1a1a1]">{value.description}</p>
-                </div>
-              </motion.div>
-            ))}
+            {(data.values?.items || []).map((value, index) => {
+              const isValidImageUrl = value.icon && (value.icon.startsWith('http') || value.icon.startsWith('/'));
+              return (
+                <motion.div
+                  key={value.title}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                  whileHover={{ scale: 1.02 }}
+                  className="glass rounded-2xl p-8 flex gap-6"
+                >
+                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-[#5BBB69]/20 to-[#5E5D5E]/20 flex items-center justify-center text-3xl flex-shrink-0 overflow-hidden">
+                    {isValidImageUrl ? (
+                      <Image
+                        src={value.icon}
+                        alt={value.title}
+                        width={64}
+                        height={64}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-[#5BBB69]">{value.icon || '📷'}</span>
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold font-[family-name:var(--font-heading)] mb-2">
+                      {value.title}
+                    </h3>
+                    <p className="text-[#a1a1a1]">{value.description}</p>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -253,29 +266,42 @@ export default function AboutClient({ data }: AboutClientProps) {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {(data.team?.members || []).map((member, index) => (
-              <motion.div
-                key={member.name}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                whileHover={{ y: -5 }}
-                className="glass rounded-2xl p-8 text-center card-hover group"
-              >
+            {(data.team?.members || []).map((member, index) => {
+              const isValidImageUrl = member.image && (member.image.startsWith('http') || member.image.startsWith('/'));
+              return (
                 <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  className="w-24 h-24 rounded-full bg-gradient-to-br from-[#5BBB69]/20 to-[#5E5D5E]/20 flex items-center justify-center text-5xl mx-auto mb-6"
+                  key={member.name}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                  whileHover={{ y: -5 }}
+                  className="glass rounded-2xl p-8 text-center card-hover group"
                 >
-                  {member.emoji}
+                  <motion.div
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    className="w-24 h-24 rounded-full bg-gradient-to-br from-[#5BBB69]/20 to-[#5E5D5E]/20 flex items-center justify-center text-5xl mx-auto mb-6 overflow-hidden"
+                  >
+                    {isValidImageUrl ? (
+                      <Image
+                        src={member.image}
+                        alt={member.name}
+                        width={96}
+                        height={96}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-[#5BBB69]">👤</span>
+                    )}
+                  </motion.div>
+                  <h3 className="text-xl font-bold font-[family-name:var(--font-heading)] group-hover:text-[#5BBB69] transition-colors">
+                    {member.name}
+                  </h3>
+                  <p className="text-[#5BBB69] text-sm mb-4">{member.role}</p>
+                  <p className="text-[#a1a1a1] text-sm">{member.bio}</p>
                 </motion.div>
-                <h3 className="text-xl font-bold font-[family-name:var(--font-heading)] group-hover:text-[#5BBB69] transition-colors">
-                  {member.name}
-                </h3>
-                <p className="text-[#5BBB69] text-sm mb-4">{member.role}</p>
-                <p className="text-[#a1a1a1] text-sm">{member.bio}</p>
-              </motion.div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
