@@ -56,7 +56,7 @@ export default function Navbar() {
                 <div className="absolute inset-0 rounded-xl bg-[#5BBB69] blur-lg opacity-30 group-hover:opacity-50 transition-opacity" />
               </motion.div>
               <span className="text-xl font-bold font-[family-name:var(--font-heading)] tracking-tight">
-                <span className="text-[#5BBB69]">Foody</span>Parrot
+                <span className="text-[#ce1316]">Foody</span>Parrot
               </span>
             </Link>
 
